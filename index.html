@@ -260,26 +260,7 @@
       justify-content: center;
       touch-action: manipulation;
     }
-    .btn-iniciar {
-      margin: 14px auto 0;
-      display: block;
-      background: linear-gradient(135deg, #1ABC9C, #148F77);
-      color: #fff;
-      border: none;
-      border-radius: 30px;
-      padding: 12px 36px;
-      font-size: 0.95rem;
-      font-weight: 700;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      cursor: pointer;
-      box-shadow: 0 0 18px rgba(26,188,156,0.5);
-      touch-action: manipulation;
-    }
-    .btn-iniciar.corriendo {
-      background: linear-gradient(135deg, #E74C3C, #C0392B);
-      box-shadow: 0 0 18px rgba(231,76,60,0.5);
-    }
+    /* btn-iniciar eliminado: el flujo se controla tocando el diagrama */
     .desc-flujo {
       margin: 10px 14px 0;
       padding: 10px 14px;
@@ -404,11 +385,10 @@
       <button class="btn-cerrar" onclick="cerrarModalFlujo()">&#10005;</button>
     </div>
 
-    <button class="btn-iniciar" id="btnIniciar" onclick="iniciarFlujo()">&#9654; INICIAR</button>
-    <div class="desc-flujo" id="descFlujo">Presiona INICIAR para ver el recorrido de las FUAs</div>
+    <div class="desc-flujo" id="descFlujo">Toca el diagrama para pausar o reanudar</div>
 
-    <div class="diagrama-wrap">
-    <svg viewBox="0 0 320 1080" xmlns="http://www.w3.org/2000/svg">
+    <div class="diagrama-wrap" onclick="toggleFlujo()" style="cursor:pointer;">
+    <svg viewBox="0 0 320 1080" xmlns="http://www.w3.org/2000/svg" style="touch-action:manipulation;">
       <defs>
         <marker id="flechaF" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
           <path d="M0,0 L0,6 L8,3 z" fill="#4A90D9"/>
@@ -629,10 +609,9 @@
       ["fn17", 232, 961,  "17. EMERGENCIA — Corrige en 2 a 3 días y devuelve a Recepción → Archivo"],
     ];
 
-    let pasoF = 0, corriendoF = false, timerF = null;
+    let pasoF = 0, corriendoF = false, pausadoF = false, timerF = null;
     const particulaF = document.getElementById('fparticula');
     const descFlujoEl = document.getElementById('descFlujo');
-    const btnIniciarEl = document.getElementById('btnIniciar');
 
     function limpiarActivosFlujo(){
       document.querySelectorAll('#modalFlujo .nodo.activo').forEach(n => n.classList.remove('activo'));
@@ -667,47 +646,60 @@
       });
     }
 
-    function iniciarFlujo(){
-      if(corriendoF){
-        clearTimeout(timerF);
-        corriendoF = false;
+    // Toggle: toque en el diagrama pausa/reanuda
+    function toggleFlujo(){
+      if(!corriendoF && !pausadoF){
+        // No iniciado o ya terminó → reiniciar
         pasoF = 0;
-        limpiarActivosFlujo();
-        particulaF.style.opacity = '0';
-        descFlujoEl.textContent = 'Presiona INICIAR para ver el recorrido de las FUAs';
-        btnIniciarEl.textContent = '▶ INICIAR';
-        btnIniciarEl.classList.remove('corriendo');
+        corriendoF = true;
+        pausadoF = false;
+        ejecutarPasoFlujo();
         return;
       }
-      corriendoF = true;
-      pasoF = 0;
-      btnIniciarEl.textContent = '⏹ DETENER';
-      btnIniciarEl.classList.add('corriendo');
-      ejecutarPasoFlujo();
+      if(corriendoF && !pausadoF){
+        // Corriendo → pausar
+        clearTimeout(timerF);
+        pausadoF = true;
+        corriendoF = false;
+        descFlujoEl.textContent = '⏸ Pausado — Toca para continuar';
+        return;
+      }
+      if(pausadoF){
+        // Pausado → reanudar
+        pausadoF = false;
+        corriendoF = true;
+        ejecutarPasoFlujo();
+        return;
+      }
     }
 
     function finalizarFlujo(){
       corriendoF = false;
+      pausadoF = false;
       limpiarActivosFlujo();
       particulaF.style.opacity = '0';
-      btnIniciarEl.textContent = '▶ INICIAR';
-      btnIniciarEl.classList.remove('corriendo');
-      descFlujoEl.textContent = '✅ Flujo completado — Presiona INICIAR para repetir';
+      descFlujoEl.textContent = '✅ Flujo completado — Toca el diagrama para repetir';
     }
 
     function abrirModalFlujo(){
       document.getElementById('modalFlujo').classList.add('abierto');
       document.body.style.overflow = 'hidden';
+      // Auto-inicio al abrir
+      pasoF = 0;
+      corriendoF = true;
+      pausadoF = false;
+      descFlujoEl.textContent = 'Toca el diagrama para pausar o reanudar';
+      setTimeout(ejecutarPasoFlujo, 400);
     }
 
     function cerrarModalFlujo(){
-      if(corriendoF){ clearTimeout(timerF); corriendoF = false; }
+      clearTimeout(timerF);
+      corriendoF = false;
+      pausadoF = false;
+      pasoF = 0;
       limpiarActivosFlujo();
       particulaF.style.opacity = '0';
-      pasoF = 0;
-      btnIniciarEl.textContent = '▶ INICIAR';
-      btnIniciarEl.classList.remove('corriendo');
-      descFlujoEl.textContent = 'Presiona INICIAR para ver el recorrido de las FUAs';
+      descFlujoEl.textContent = 'Toca el diagrama para pausar o reanudar';
       document.getElementById('modalFlujo').classList.remove('abierto');
       document.body.style.overflow = '';
     }
