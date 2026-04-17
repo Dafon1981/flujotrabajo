@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Flujo de Trabajo</title>
+  <title>Flujo de Trabajo — Emergencia</title>
   <style>
     * {
       box-sizing: border-box;
@@ -19,14 +19,14 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding: 0 0 24px 0;
+      padding: 0 0 28px 0;
     }
 
     /* ── ENCABEZADO ── */
     header {
       width: 100%;
       background: linear-gradient(135deg, #0D2B6B 0%, #1A5276 100%);
-      padding: 18px 16px 14px;
+      padding: 16px 16px 12px;
       text-align: center;
       box-shadow: 0 3px 12px rgba(0,0,0,0.4);
       position: sticky;
@@ -36,7 +36,7 @@
 
     header h1 {
       color: #ffffff;
-      font-size: 1.25rem;
+      font-size: 1.2rem;
       font-weight: 700;
       letter-spacing: 1px;
       text-transform: uppercase;
@@ -44,19 +44,33 @@
 
     header p.subtitulo {
       color: #7FB3D3;
-      font-size: 0.78rem;
+      font-size: 0.75rem;
       margin-top: 3px;
-      letter-spacing: 0.5px;
+      letter-spacing: 0.4px;
     }
+
+    /* ── ETIQUETA DE SECCIÓN ── */
+    .seccion-label {
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      padding: 4px 14px;
+      border-radius: 20px;
+      margin: 10px 0 4px;
+    }
+    .seccion-jornada  { background: #1A5276; color: #AED6F1; }
+    .seccion-correccion { background: #7B241C; color: #FADBD8; }
+    .seccion-alerta   { background: #784212; color: #FAD7A0; }
 
     /* ── CONTADOR ── */
     .contador {
       color: #ffffff;
-      font-size: 0.85rem;
-      font-weight: 600;
-      margin: 14px 0 8px;
-      background: rgba(255,255,255,0.12);
-      padding: 5px 18px;
+      font-size: 0.88rem;
+      font-weight: 700;
+      margin: 6px 0 8px;
+      background: rgba(255,255,255,0.13);
+      padding: 5px 20px;
       border-radius: 20px;
       letter-spacing: 1px;
     }
@@ -66,7 +80,6 @@
       width: 100%;
       max-width: 480px;
       padding: 0 12px;
-      position: relative;
     }
 
     /* ── TRACK DE IMÁGENES ── */
@@ -75,7 +88,6 @@
       border-radius: 14px;
       box-shadow: 0 6px 24px rgba(0,0,0,0.5);
       background: #000;
-      position: relative;
       touch-action: pan-y;
     }
 
@@ -96,13 +108,13 @@
       pointer-events: none;
     }
 
-    /* ── BOTONES IZQUIERDA / DERECHA ── */
+    /* ── BOTONES ── */
     .controles {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-top: 16px;
-      gap: 12px;
+      margin-top: 14px;
+      gap: 10px;
     }
 
     .btn-nav {
@@ -111,13 +123,12 @@
       color: #fff;
       border: none;
       border-radius: 12px;
-      padding: 14px 0;
+      padding: 15px 0;
       font-size: 1.5rem;
       font-weight: 700;
       cursor: pointer;
       box-shadow: 0 4px 12px rgba(0,0,0,0.3);
       transition: background 0.2s, transform 0.1s;
-      -webkit-appearance: none;
       touch-action: manipulation;
     }
 
@@ -127,8 +138,8 @@
     }
 
     .btn-nav:disabled {
-      background: rgba(255,255,255,0.1);
-      color: rgba(255,255,255,0.3);
+      background: rgba(255,255,255,0.08);
+      color: rgba(255,255,255,0.25);
       cursor: not-allowed;
       box-shadow: none;
     }
@@ -136,14 +147,14 @@
     /* ── ETIQUETA DE PASO ── */
     .etiqueta-paso {
       text-align: center;
-      margin-top: 14px;
-      padding: 10px 16px;
+      margin-top: 12px;
+      padding: 10px 14px;
       background: rgba(255,255,255,0.08);
       border-radius: 10px;
       color: #D6EAF8;
       font-size: 0.82rem;
-      line-height: 1.4;
-      min-height: 48px;
+      line-height: 1.45;
+      min-height: 50px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -153,30 +164,31 @@
     .puntos {
       display: flex;
       justify-content: center;
-      gap: 7px;
-      margin-top: 14px;
+      gap: 6px;
+      margin-top: 12px;
       flex-wrap: wrap;
+      padding: 0 8px;
     }
 
     .punto {
       width: 9px;
       height: 9px;
       border-radius: 50%;
-      background: rgba(255,255,255,0.25);
+      background: rgba(255,255,255,0.22);
       transition: background 0.3s, transform 0.3s;
       cursor: pointer;
+      flex-shrink: 0;
     }
 
-    .punto.activo {
-      background: #2ECC71;
-      transform: scale(1.35);
-    }
+    .punto.activo-jornada    { background: #2ECC71; transform: scale(1.4); }
+    .punto.activo-correccion { background: #E74C3C; transform: scale(1.4); }
+    .punto.activo-alerta     { background: #F39C12; transform: scale(1.4); }
 
     /* ── PIE ── */
     footer {
-      margin-top: 20px;
-      color: rgba(255,255,255,0.35);
-      font-size: 0.7rem;
+      margin-top: 18px;
+      color: rgba(255,255,255,0.32);
+      font-size: 0.68rem;
       text-align: center;
       padding: 0 16px;
     }
@@ -186,22 +198,49 @@
 
   <header>
     <h1>&#128203; Flujo de Trabajo</h1>
-    <p class="subtitulo">Sección de Emergencia — Jornada 8:00 AM a 5:00 PM</p>
+    <p class="subtitulo">Sección de Emergencia — Hospital Cayetano Heredia</p>
   </header>
 
-  <div class="contador" id="contador">1 / 7</div>
+  <div class="seccion-label seccion-jornada" id="labelSeccion">Jornada de Trabajo</div>
+  <div class="contador" id="contador">1 / 12</div>
 
   <div class="carrusel-wrapper">
 
     <div class="carrusel-track" id="track">
       <div class="carrusel-inner" id="inner">
-        <img src="https://raw.githubusercontent.com/Dafon1981/flujotrabajo/main/01_Inicio_8am.jpg" alt="Paso 1 - Inicio 8:00 AM" loading="eager" />
-        <img src="https://raw.githubusercontent.com/Dafon1981/flujotrabajo/main/02_Recepcion_FUAs_10am.jpg" alt="Paso 2 - Recepción FUAs 10:00 AM" loading="lazy" />
-        <img src="https://raw.githubusercontent.com/Dafon1981/flujotrabajo/main/03_Checklist_Almacen_10-11-30am.jpg" alt="Paso 3 - Checklist y Almacén 10:00-11:30 AM" loading="lazy" />
-        <img src="https://raw.githubusercontent.com/Dafon1981/flujotrabajo/main/04_Registro_Continuo_11-30am-1pm.jpg" alt="Paso 4 - Registro Continuo 11:30 AM - 1:00 PM" loading="lazy" />
-        <img src="https://raw.githubusercontent.com/Dafon1981/flujotrabajo/main/05_Refrigerio_1pm-2pm.jpg" alt="Paso 5 - Refrigerio 1:00 PM - 2:00 PM" loading="lazy" />
-        <img src="https://raw.githubusercontent.com/Dafon1981/flujotrabajo/main/06_Registro_Pendientes_2pm-5pm.jpg" alt="Paso 6 - Registro Pendientes 2:00 PM - 5:00 PM" loading="lazy" />
-        <img src="https://raw.githubusercontent.com/Dafon1981/flujotrabajo/main/07_Recuento_Cierre_5pm.jpg" alt="Paso 7 - Recuento y Cierre antes de 5:00 PM" loading="lazy" />
+
+        <!-- ══ SECCIÓN 1: JORNADA 8AM–5PM (pasos 1–7) ══ -->
+        <img src="https://raw.githubusercontent.com/Dafon1981/flujotrabajo/main/01_Inicio_8am.jpg"
+             alt="Paso 1 - Inicio 8:00 AM" loading="eager" />
+        <img src="https://raw.githubusercontent.com/Dafon1981/flujotrabajo/main/02_Recepcion_FUAs_10am.jpg"
+             alt="Paso 2 - Recepción FUAs 10:00 AM" loading="lazy" />
+        <img src="https://raw.githubusercontent.com/Dafon1981/flujotrabajo/main/03_Checklist_Almacen_10-11-30am.jpg"
+             alt="Paso 3 - Checklist y Almacén" loading="lazy" />
+        <img src="https://raw.githubusercontent.com/Dafon1981/flujotrabajo/main/04_Registro_Continuo_11-30am-1pm.jpg"
+             alt="Paso 4 - Registro Continuo" loading="lazy" />
+        <img src="https://raw.githubusercontent.com/Dafon1981/flujotrabajo/main/05_Refrigerio_1pm-2pm.jpg"
+             alt="Paso 5 - Refrigerio" loading="lazy" />
+        <img src="https://raw.githubusercontent.com/Dafon1981/flujotrabajo/main/06_Registro_Pendientes_2pm-5pm.jpg"
+             alt="Paso 6 - Registro Pendientes" loading="lazy" />
+        <img src="https://raw.githubusercontent.com/Dafon1981/flujotrabajo/main/07_Recuento_Cierre_5pm.jpg"
+             alt="Paso 7 - Recuento y Cierre" loading="lazy" />
+
+        <!-- ══ SECCIÓN 2: CORRECCIÓN DE FUAs INCOMPLETAS (pasos 8–12) ══ -->
+        <img src="https://raw.githubusercontent.com/Dafon1981/flujotrabajo/main/incompletas_01_deteccion.jpg"
+             alt="Corrección 1 - Digitación Archivo detecta FUAs incompletas" loading="lazy" />
+        <img src="https://raw.githubusercontent.com/Dafon1981/flujotrabajo/main/incompletas_02_fajado_v2.jpg"
+             alt="Corrección 2 - Archivo faja y entrega a Recepción" loading="lazy" />
+        <img src="https://raw.githubusercontent.com/Dafon1981/flujotrabajo/main/incompletas_03_recepcion_v2.jpg"
+             alt="Corrección 3 - Recepción traslada a Emergencia" loading="lazy" />
+        <img src="https://raw.githubusercontent.com/Dafon1981/flujotrabajo/main/incompletas_05_devolucion_v2.jpg"
+             alt="Corrección 4 - Emergencia devuelve a Recepción" loading="lazy" />
+        <img src="https://raw.githubusercontent.com/Dafon1981/flujotrabajo/main/incompletas_06_cierre_v3.jpg"
+             alt="Corrección 5 - Recepción entrega a Archivo, proceso continúa" loading="lazy" />
+
+        <!-- ══ SECCIÓN 3: ALERTA PERMANENTE RNE Y DATOS (paso 13) ══ -->
+        <img src="https://raw.githubusercontent.com/Dafon1981/flujotrabajo/main/08_Alerta_RNE_Datos_Paciente.jpg"
+             alt="Alerta Permanente - RNE y Datos del Paciente" loading="lazy" />
+
       </div>
     </div>
 
@@ -210,9 +249,7 @@
       <button class="btn-nav" id="btnSiguiente" onclick="mover(1)">&#8594;</button>
     </div>
 
-    <div class="etiqueta-paso" id="etiqueta">
-      Paso 1 — Inicio de jornada: registro de FUAs médicas de emergencia (8:00 AM)
-    </div>
+    <div class="etiqueta-paso" id="etiqueta"></div>
 
     <div class="puntos" id="puntos"></div>
 
@@ -221,37 +258,70 @@
   <footer>Hospital Cayetano Heredia &mdash; Emergencia Recepción</footer>
 
   <script>
-    const etiquetas = [
-      "Paso 1 — Inicio de jornada: registro de FUAs médicas de emergencia (8:00 AM)",
-      "Paso 2 — Recepción de nuevas FUAs desde Cuentas Corrientes con alerta de Seguimiento (10:00 AM)",
-      "Paso 3 — Checklist de FUAs recibidas y almacén en cajas numeradas (10:00 – 11:30 AM)",
-      "Paso 4 — Registro continuo de FUAs hasta el refrigerio (11:30 AM – 1:00 PM)",
-      "Paso 5 — Refrigerio (1:00 PM – 2:00 PM)",
-      "Paso 6 — Registro de FUAs pendientes de Enfermería con apoyo de Seguimiento (2:00 PM – 5:00 PM)",
-      "Paso 7 — Recuento total, lista firmada por Asignación y pase a las demás áreas (antes de 5:00 PM)"
+    // ── Datos de cada diapositiva
+    const diapositivas = [
+      // JORNADA (índices 0–6)
+      { seccion: "jornada",    texto: "Paso 1 — Inicio de jornada: registro de FUAs médicas de emergencia (8:00 AM)" },
+      { seccion: "jornada",    texto: "Paso 2 — Recepción de nuevas FUAs desde Cuentas Corrientes con alerta de Seguimiento (10:00 AM)" },
+      { seccion: "jornada",    texto: "Paso 3 — Verificación de la lista de control de FUAs y almacenamiento en cajas numeradas (10:00 – 11:30 AM)" },
+      { seccion: "jornada",    texto: "Paso 4 — Continuación y término del registro de FUAs antes del refrigerio (11:30 AM – 1:00 PM)" },
+      { seccion: "jornada",    texto: "Paso 5 — Pausa para el almuerzo (1:00 PM – 2:00 PM)" },
+      { seccion: "jornada",    texto: "Paso 6 — Registro de FUAs pendientes de Enfermería con apoyo de Seguimiento (2:00 PM – 5:00 PM)" },
+      { seccion: "jornada",    texto: "Paso 7 — Recuento total, lista firmada por Asignación y entrega con cargo a las demás áreas (antes de 5:00 PM)" },
+      // CORRECCIÓN (índices 7–11)
+      { seccion: "correccion", texto: "Corrección 1 — Digitación Archivo detecta FUAs con datos incompletos o RNE del médico faltante" },
+      { seccion: "correccion", texto: "Corrección 2 — Archivo faja, numera y entrega las FUAs incompletas a Recepción con cargo firmado" },
+      { seccion: "correccion", texto: "Corrección 3 — Recepción traslada las FUAs incompletas a Emergencia para su corrección (plazo: 2 a 3 días)" },
+      { seccion: "correccion", texto: "Corrección 4 — Emergencia corrige los datos y devuelve las FUAs completas a Recepción" },
+      { seccion: "correccion", texto: "Corrección 5 — Recepción entrega las FUAs completas a Archivo, quien retoma el proceso hacia Archivo Central" },
+      // ALERTA (índice 12)
+      { seccion: "alerta",     texto: "Alerta Permanente — Los datos del paciente y el RNE con especialidad del médico deben estar SIEMPRE completos en la FUA. Informática debe mantener el sistema actualizado." }
     ];
 
-    const total = etiquetas.length;
+    const etiquetasSecciones = {
+      jornada:    "Jornada de Trabajo",
+      correccion: "Corrección de FUAs Incompletas",
+      alerta:     "Alerta Permanente — RNE y Datos del Paciente"
+    };
+
+    const total = diapositivas.length;
     let actual = 0;
 
     // ── Crear puntos indicadores
     const contenedorPuntos = document.getElementById('puntos');
     for (let i = 0; i < total; i++) {
       const p = document.createElement('div');
-      p.className = 'punto' + (i === 0 ? ' activo' : '');
+      p.className = 'punto';
       p.setAttribute('data-i', i);
       p.addEventListener('click', () => irA(i));
       contenedorPuntos.appendChild(p);
     }
 
     function actualizar() {
+      const d = diapositivas[actual];
+
+      // Mover carrusel
       document.getElementById('inner').style.transform = `translateX(-${actual * 100}%)`;
+
+      // Contador
       document.getElementById('contador').textContent = `${actual + 1} / ${total}`;
-      document.getElementById('etiqueta').textContent = etiquetas[actual];
+
+      // Etiqueta de paso
+      document.getElementById('etiqueta').textContent = d.texto;
+
+      // Etiqueta de sección
+      const labelEl = document.getElementById('labelSeccion');
+      labelEl.textContent = etiquetasSecciones[d.seccion];
+      labelEl.className = 'seccion-label seccion-' + d.seccion;
+
+      // Botones
       document.getElementById('btnAnterior').disabled = actual === 0;
       document.getElementById('btnSiguiente').disabled = actual === total - 1;
+
+      // Puntos
       document.querySelectorAll('.punto').forEach((p, i) => {
-        p.classList.toggle('activo', i === actual);
+        p.className = 'punto';
+        if (i === actual) p.classList.add('activo-' + d.seccion);
       });
     }
 
@@ -268,21 +338,19 @@
       actualizar();
     }
 
-    // ── Soporte táctil (swipe izquierda/derecha)
+    // ── Soporte táctil (deslizamiento con el dedo)
     const track = document.getElementById('track');
-    let startX = 0;
-    let startY = 0;
-    let dragging = false;
+    let startX = 0, startY = 0, arrastrando = false;
 
     track.addEventListener('touchstart', e => {
       startX = e.touches[0].clientX;
       startY = e.touches[0].clientY;
-      dragging = true;
+      arrastrando = true;
     }, { passive: true });
 
     track.addEventListener('touchend', e => {
-      if (!dragging) return;
-      dragging = false;
+      if (!arrastrando) return;
+      arrastrando = false;
       const dx = e.changedTouches[0].clientX - startX;
       const dy = e.changedTouches[0].clientY - startY;
       if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 40) {
@@ -293,9 +361,10 @@
     // ── Soporte teclado (flechas)
     document.addEventListener('keydown', e => {
       if (e.key === 'ArrowRight') mover(1);
-      if (e.key === 'ArrowLeft') mover(-1);
+      if (e.key === 'ArrowLeft')  mover(-1);
     });
 
+    // Inicializar
     actualizar();
   </script>
 </body>
