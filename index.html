@@ -184,6 +184,139 @@
     .punto.activo-correccion { background: #E74C3C; transform: scale(1.4); }
     .punto.activo-alerta     { background: #F39C12; transform: scale(1.4); }
 
+    /* ── BOTÓN FLUJO ── */
+    .btn-flujo-wrap {
+      width: 100%;
+      max-width: 480px;
+      padding: 0 12px;
+      margin-top: 14px;
+    }
+    .btn-flujo {
+      width: 100%;
+      background: linear-gradient(135deg, #1ABC9C, #148F77);
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      padding: 15px 0;
+      font-size: 1rem;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      cursor: pointer;
+      box-shadow: 0 0 18px rgba(26,188,156,0.45);
+      transition: transform 0.15s, box-shadow 0.15s;
+      touch-action: manipulation;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    .btn-flujo:active { transform: scale(0.96); }
+
+    /* ── MODAL FLUJO ANIMADO ── */
+    .modal-flujo {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      background: #0a1628;
+      flex-direction: column;
+      align-items: center;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+    .modal-flujo.abierto { display: flex; }
+
+    .modal-header {
+      width: 100%;
+      background: linear-gradient(135deg, #0D2B6B, #1A5276);
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.5);
+    }
+    .modal-header h2 {
+      color: #fff;
+      font-size: 0.95rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .btn-cerrar {
+      background: rgba(255,255,255,0.12);
+      border: none;
+      color: #fff;
+      font-size: 1.3rem;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      touch-action: manipulation;
+    }
+    .btn-iniciar {
+      margin: 14px auto 0;
+      display: block;
+      background: linear-gradient(135deg, #1ABC9C, #148F77);
+      color: #fff;
+      border: none;
+      border-radius: 30px;
+      padding: 12px 36px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      cursor: pointer;
+      box-shadow: 0 0 18px rgba(26,188,156,0.5);
+      touch-action: manipulation;
+    }
+    .btn-iniciar.corriendo {
+      background: linear-gradient(135deg, #E74C3C, #C0392B);
+      box-shadow: 0 0 18px rgba(231,76,60,0.5);
+    }
+    .desc-flujo {
+      margin: 10px 14px 0;
+      padding: 10px 14px;
+      background: rgba(255,255,255,0.07);
+      border-radius: 10px;
+      color: #D6EAF8;
+      font-size: 0.78rem;
+      text-align: center;
+      min-height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      max-width: 420px;
+      width: calc(100% - 28px);
+    }
+    .diagrama-wrap {
+      width: 100%;
+      max-width: 420px;
+      padding: 12px 12px 0;
+    }
+    .diagrama-wrap svg { width: 100%; height: auto; display: block; }
+    .nodo rect, .nodo polygon { transition: filter 0.3s; }
+    .nodo.activo rect, .nodo.activo polygon {
+      filter: drop-shadow(0 0 8px #FFD700) drop-shadow(0 0 16px #FFD700);
+    }
+    .linea-flujo { stroke: #4A90D9; stroke-width: 2.5; fill: none; marker-end: url(#flechaF); }
+    .particula-luz { fill: #FFD700; filter: drop-shadow(0 0 6px #FFD700) drop-shadow(0 0 12px #FFF176); opacity: 0; }
+    .lbl-f  { font-size: 9px; font-weight: 700; text-anchor: middle; dominant-baseline: middle; pointer-events: none; }
+    .lbl-fs { font-size: 7.5px; font-weight: 400; text-anchor: middle; dominant-baseline: middle; pointer-events: none; }
+    .leyenda-flujo {
+      display: flex; flex-wrap: wrap; justify-content: center;
+      gap: 8px; margin: 14px 12px 24px;
+      max-width: 420px; width: calc(100% - 24px);
+    }
+    .leyenda-item { display: flex; align-items: center; gap: 5px; font-size: 0.67rem; color: #AED6F1; }
+    .leyenda-color { width: 11px; height: 11px; border-radius: 3px; flex-shrink: 0; }
+
     /* ── PIE ── */
     footer {
       margin-top: 18px;
@@ -256,6 +389,108 @@
     <div class="puntos" id="puntos"></div>
 
   </div>
+
+  <!-- Botón FLUJO -->
+  <div class="btn-flujo-wrap">
+    <button class="btn-flujo" onclick="abrirModalFlujo()">
+      &#9654; FLUJO GENERAL
+    </button>
+  </div>
+
+  <!-- MODAL FLUJO ANIMADO -->
+  <div class="modal-flujo" id="modalFlujo">
+    <div class="modal-header">
+      <h2>&#128203; Flujo General de FUAs</h2>
+      <button class="btn-cerrar" onclick="cerrarModalFlujo()">&#10005;</button>
+    </div>
+
+    <button class="btn-iniciar" id="btnIniciar" onclick="iniciarFlujo()">&#9654; INICIAR</button>
+    <div class="desc-flujo" id="descFlujo">Presiona INICIAR para ver el recorrido de las FUAs</div>
+
+    <div class="diagrama-wrap">
+    <svg viewBox="0 0 320 1080" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="flechaF" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+          <path d="M0,0 L0,6 L8,3 z" fill="#4A90D9"/>
+        </marker>
+        <marker id="flechaFR" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+          <path d="M0,0 L0,6 L8,3 z" fill="#E74C3C"/>
+        </marker>
+        <marker id="flechaFO" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+          <path d="M0,0 L0,6 L8,3 z" fill="#E67E22"/>
+        </marker>
+      </defs>
+
+      <!-- LÍNEAS -->
+      <line class="linea-flujo" x1="160" y1="44" x2="160" y2="82"/>
+      <line class="linea-flujo" x1="185" y1="100" x2="230" y2="130"/>
+      <line class="linea-flujo" x1="135" y1="100" x2="90" y2="130"/>
+      <line class="linea-flujo" x1="230" y1="158" x2="185" y2="188"/>
+      <line class="linea-flujo" x1="90" y1="158" x2="135" y2="188"/>
+      <line class="linea-flujo" x1="160" y1="202" x2="160" y2="232"/>
+      <line class="linea-flujo" x1="160" y1="262" x2="160" y2="302"/>
+      <line stroke="#E67E22" stroke-width="2" stroke-dasharray="5,3" fill="none" marker-end="url(#flechaFO)" x1="260" y1="248" x2="210" y2="318"/>
+      <line class="linea-flujo" x1="160" y1="342" x2="160" y2="382"/>
+      <line class="linea-flujo" x1="160" y1="402" x2="160" y2="432"/>
+      <line class="linea-flujo" x1="135" y1="450" x2="90" y2="480"/>
+      <line class="linea-flujo" x1="185" y1="450" x2="230" y2="480"/>
+      <line class="linea-flujo" x1="90" y1="508" x2="135" y2="548"/>
+      <line class="linea-flujo" x1="230" y1="508" x2="185" y2="548"/>
+      <line class="linea-flujo" x1="160" y1="578" x2="160" y2="618"/>
+      <path class="linea-flujo" d="M 200 628 Q 290 628 290 658 Q 290 688 200 688" marker-end="url(#flechaF)"/>
+      <line class="linea-flujo" x1="160" y1="708" x2="160" y2="748"/>
+      <line class="linea-flujo" x1="135" y1="766" x2="90" y2="806"/>
+      <line class="linea-flujo" x1="185" y1="766" x2="230" y2="806"/>
+      <line class="linea-flujo" x1="230" y1="836" x2="230" y2="876"/>
+      <line class="linea-flujo" x1="230" y1="906" x2="230" y2="946"/>
+      <path stroke="#E74C3C" stroke-width="2" stroke-dasharray="5,3" fill="none" marker-end="url(#flechaFR)" d="M 200 966 Q 290 966 290 688"/>
+
+      <!-- NODOS -->
+      <g class="nodo" id="fn1"><rect x="100" y="14" width="120" height="30" rx="8" fill="#27AE60"/><text class="lbl-f" x="160" y="25" fill="#fff">CONSULTORIOS</text><text class="lbl-fs" x="160" y="36" fill="#D5F5E3">Médico llena la FUA</text></g>
+      <g class="nodo" id="fn2"><polygon points="160,82 195,100 160,118 125,100" fill="#D6EAF8" stroke="#2980B9" stroke-width="1.5"/><text class="lbl-f" x="160" y="100" fill="#1A5276">Especialidad</text></g>
+      <g class="nodo" id="fn3"><rect x="188" y="130" width="88" height="28" rx="6" fill="#2980B9"/><text class="lbl-f" x="232" y="140" fill="#fff">MÓDULO 9</text><text class="lbl-fs" x="232" y="151" fill="#AED6F1">Entrega FUAs</text></g>
+      <g class="nodo" id="fn3b"><rect x="30" y="130" width="88" height="28" rx="6" fill="#8E44AD"/><text class="lbl-f" x="74" y="140" fill="#fff">PEDIATRÍA /</text><text class="lbl-fs" x="74" y="151" fill="#E8DAEF">GINECOLOGÍA</text></g>
+      <g class="nodo" id="fn4"><rect x="100" y="188" width="120" height="14" rx="5" fill="#2471A3"/><text class="lbl-f" x="160" y="196" fill="#fff">CUENTAS CORRIENTES</text></g>
+      <g class="nodo" id="fn5"><rect x="100" y="232" width="120" height="30" rx="6" fill="#1A5276"/><text class="lbl-f" x="160" y="243" fill="#fff">CUENTAS CORRIENTES</text><text class="lbl-fs" x="160" y="254" fill="#AED6F1">Liquidación y fajos numerados</text></g>
+      <g class="nodo" id="fnSeg"><rect x="218" y="222" width="96" height="44" rx="6" fill="#E67E22"/><text class="lbl-f" x="266" y="233" fill="#fff">SEGUIMIENTO</text><text class="lbl-fs" x="266" y="243" fill="#FDEBD0">DE EMERGENCIA</text><text class="lbl-fs" x="266" y="253" fill="#FDEBD0">Alerta y apoyo</text><text class="lbl-fs" x="266" y="263" fill="#FDEBD0">a Registro</text></g>
+      <g class="nodo" id="fn6"><rect x="100" y="302" width="120" height="40" rx="6" fill="#F1C40F"/><text class="lbl-f" x="160" y="315" fill="#333">REGISTRO</text><text class="lbl-fs" x="160" y="326" fill="#555">Checklist, registro y almacén</text><text class="lbl-fs" x="160" y="336" fill="#555">8:00 AM – 5:00 PM</text></g>
+      <g class="nodo" id="fn7"><rect x="100" y="382" width="120" height="20" rx="5" fill="#5D6D7E"/><text class="lbl-f" x="160" y="393" fill="#fff">ASIGNACIÓN</text></g>
+      <g class="nodo" id="fn8"><polygon points="160,432 195,450 160,468 125,450" fill="#D6EAF8" stroke="#2980B9" stroke-width="1.5"/><text class="lbl-f" x="160" y="450" fill="#1A5276">Tipo de FUA</text></g>
+      <g class="nodo" id="fn9"><rect x="30" y="480" width="88" height="28" rx="6" fill="#1A5276"/><text class="lbl-f" x="74" y="490" fill="#fff">DIGITADORES</text><text class="lbl-fs" x="74" y="501" fill="#AED6F1">Medicina simple</text></g>
+      <g class="nodo" id="fn9b"><rect x="188" y="480" width="88" height="28" rx="6" fill="#6C3483"/><text class="lbl-f" x="232" y="490" fill="#fff">MÉD. AUDITOR</text><text class="lbl-fs" x="232" y="501" fill="#E8DAEF">Ped./Gin./Compl.</text></g>
+      <g class="nodo" id="fn10"><rect x="100" y="548" width="120" height="30" rx="6" fill="#A569BD"/><text class="lbl-f" x="160" y="559" fill="#fff">DIGITACIÓN ARCHIVO</text><text class="lbl-fs" x="160" y="570" fill="#F4ECF7">Entrada datos · Filtro firmas</text></g>
+      <g class="nodo" id="fn11"><rect x="100" y="618" width="120" height="20" rx="5" fill="#7D3C98"/><text class="lbl-f" x="160" y="629" fill="#fff">ARCHIVO — Desglose</text></g>
+      <g class="nodo" id="fn12"><rect x="100" y="668" width="120" height="40" rx="6" fill="#A569BD"/><text class="lbl-f" x="160" y="681" fill="#fff">DIGITACIÓN ARCHIVO</text><text class="lbl-fs" x="160" y="692" fill="#F4ECF7">Filtro final:</text><text class="lbl-fs" x="160" y="702" fill="#F4ECF7">Datos paciente + RNE</text></g>
+      <g class="nodo" id="fn13"><polygon points="160,748 195,766 160,784 125,766" fill="#D6EAF8" stroke="#2980B9" stroke-width="1.5"/><text class="lbl-f" x="160" y="766" fill="#1A5276">¿FUA completa?</text></g>
+      <g class="nodo" id="fn14"><rect x="30" y="806" width="88" height="36" rx="6" fill="#27AE60"/><text class="lbl-f" x="74" y="817" fill="#fff">ARCHIVO CENTRAL</text><text class="lbl-fs" x="74" y="828" fill="#D5F5E3">Entrega final:</text><text class="lbl-fs" x="74" y="838" fill="#D5F5E3">Fajado · Enumerado</text></g>
+      <g class="nodo" id="fn15"><rect x="188" y="806" width="88" height="30" rx="6" fill="#E74C3C"/><text class="lbl-f" x="232" y="817" fill="#fff">ARCHIVO</text><text class="lbl-fs" x="232" y="828" fill="#FADBD8">Faja incompletas</text></g>
+      <g class="nodo" id="fn16"><rect x="188" y="876" width="88" height="30" rx="6" fill="#117A65"/><text class="lbl-f" x="232" y="887" fill="#fff">RECEPCIÓN</text><text class="lbl-fs" x="232" y="898" fill="#A9DFBF">Recibe con cargo</text></g>
+      <g class="nodo" id="fn17"><rect x="188" y="946" width="88" height="30" rx="6" fill="#D35400"/><text class="lbl-f" x="232" y="957" fill="#fff">EMERGENCIA</text><text class="lbl-fs" x="232" y="968" fill="#FAD7A0">Corrige en 2-3 días</text></g>
+
+      <!-- Etiquetas bifurcación -->
+      <text x="108" y="462" font-size="7" fill="#AED6F1">MEDICINA</text>
+      <text x="108" y="470" font-size="7" fill="#AED6F1">simple</text>
+      <text x="192" y="462" font-size="7" fill="#AED6F1">PED/GIN/</text>
+      <text x="192" y="470" font-size="7" fill="#AED6F1">complicada</text>
+      <text x="100" y="778" font-size="7.5" fill="#2ECC71">SÍ</text>
+      <text x="192" y="778" font-size="7.5" fill="#E74C3C">NO</text>
+      <text x="148" y="128" font-size="7" fill="#AED6F1">MEDICINA</text>
+      <text x="72" y="128" font-size="7" fill="#AED6F1">PED/GIN</text>
+
+      <!-- Partícula de luz -->
+      <circle class="particula-luz" id="fparticula" cx="160" cy="29" r="6"/>
+    </svg>
+    </div>
+
+    <div class="leyenda-flujo">
+      <div class="leyenda-item"><div class="leyenda-color" style="background:#27AE60"></div>Inicio / Fin</div>
+      <div class="leyenda-item"><div class="leyenda-color" style="background:#F1C40F"></div>Registro</div>
+      <div class="leyenda-item"><div class="leyenda-color" style="background:#A569BD"></div>Digitación Archivo</div>
+      <div class="leyenda-item"><div class="leyenda-color" style="background:#E67E22"></div>Seguimiento</div>
+      <div class="leyenda-item"><div class="leyenda-color" style="background:#E74C3C"></div>Corrección FUAs</div>
+    </div>
+  </div>
+  <!-- FIN MODAL -->
 
   <footer>Hospital Cayetano Heredia &mdash; Emergencia Recepción</footer>
 
@@ -369,6 +604,113 @@
 
     // Inicializar
     actualizar();
+
+    // ══ MODAL FLUJO ANIMADO ══
+    const pasosFlujo = [
+      ["fn1",  160,  29,  "1. CONSULTORIOS — El médico llena la FUA en el consultorio"],
+      ["fn2",  160, 100,  "2. ESPECIALIDAD — Se determina si es Medicina, Pediatría o Ginecología"],
+      ["fn3",  232, 144,  "3. MÓDULO 9 — Medicina entrega las FUAs al Módulo 9"],
+      ["fn3b",  74, 144,  "3b. PEDIATRÍA / GINECOLOGÍA — Van directo a Cuentas Corrientes"],
+      ["fn4",  160, 196,  "4. CUENTAS CORRIENTES — Todas las FUAs llegan a Cuentas Corrientes"],
+      ["fn5",  160, 247,  "5. LIQUIDACIÓN — Cuentas Corrientes liquida y forma fajos numerados"],
+      ["fnSeg",266, 244,  "⚠ SEGUIMIENTO DE EMERGENCIA — Alerta y apoyo permanente a Registro"],
+      ["fn6",  160, 322,  "6. REGISTRO — Checklist, registro y almacén (8:00 AM – 5:00 PM)"],
+      ["fn7",  160, 392,  "7. ASIGNACIÓN — Distribución de FUAs según tipo de especialidad"],
+      ["fn8",  160, 450,  "8. TIPO DE FUA — ¿Medicina simple o especialidad complicada?"],
+      ["fn9",   74, 494,  "9a. DIGITADORES — Registran y numeran FUAs de Medicina simple"],
+      ["fn9b", 232, 494,  "9b. MÉDICO AUDITOR — Audita FUAs de Pediatría, Ginecología y Medicina complicada"],
+      ["fn10", 160, 563,  "10. DIGITACIÓN ARCHIVO — Entrada de datos y verificación de firmas completas"],
+      ["fn11", 160, 628,  "11. ARCHIVO — Desglose de documentos, retorno solo con FUA a Digitación"],
+      ["fn12", 160, 688,  "12. DIGITACIÓN ARCHIVO — Filtro final: datos del paciente + RNE del médico"],
+      ["fn13", 160, 766,  "13. ¿FUA COMPLETA? — Se verifica si todos los datos están correctos"],
+      ["fn14",  74, 824,  "✅ ARCHIVO CENTRAL — Entrega final: fajado, enumerado y en listado"],
+      ["fn15", 232, 821,  "❌ FUAs INCOMPLETAS — Archivo faja, numera y lista las FUAs con datos faltantes"],
+      ["fn16", 232, 891,  "16. RECEPCIÓN — Recibe las FUAs incompletas con cargo firmado"],
+      ["fn17", 232, 961,  "17. EMERGENCIA — Corrige en 2 a 3 días y devuelve a Recepción → Archivo"],
+    ];
+
+    let pasoF = 0, corriendoF = false, timerF = null;
+    const particulaF = document.getElementById('fparticula');
+    const descFlujoEl = document.getElementById('descFlujo');
+    const btnIniciarEl = document.getElementById('btnIniciar');
+
+    function limpiarActivosFlujo(){
+      document.querySelectorAll('#modalFlujo .nodo.activo').forEach(n => n.classList.remove('activo'));
+    }
+
+    function animarParticulaFlujo(cx, cy, cb){
+      particulaF.setAttribute('cx', cx);
+      particulaF.setAttribute('cy', cy);
+      particulaF.style.opacity = '1';
+      const modal = document.getElementById('modalFlujo');
+      const svgEl = modal.querySelector('svg');
+      const svgH  = svgEl.getBoundingClientRect().height;
+      const ratio = cy / 1080;
+      const scrollY = svgEl.getBoundingClientRect().top + modal.scrollTop + ratio * svgH - modal.clientHeight * 0.45;
+      modal.scrollTo({ top: Math.max(0, scrollY), behavior: 'smooth' });
+      setTimeout(() => {
+        particulaF.style.opacity = '0';
+        if(cb) cb();
+      }, 900);
+    }
+
+    function ejecutarPasoFlujo(){
+      if(pasoF >= pasosFlujo.length){ finalizarFlujo(); return; }
+      const [nid, cx, cy, desc] = pasosFlujo[pasoF];
+      limpiarActivosFlujo();
+      const nodo = document.getElementById(nid);
+      if(nodo) nodo.classList.add('activo');
+      descFlujoEl.textContent = desc;
+      animarParticulaFlujo(cx, cy, () => {
+        pasoF++;
+        timerF = setTimeout(ejecutarPasoFlujo, 400);
+      });
+    }
+
+    function iniciarFlujo(){
+      if(corriendoF){
+        clearTimeout(timerF);
+        corriendoF = false;
+        pasoF = 0;
+        limpiarActivosFlujo();
+        particulaF.style.opacity = '0';
+        descFlujoEl.textContent = 'Presiona INICIAR para ver el recorrido de las FUAs';
+        btnIniciarEl.textContent = '▶ INICIAR';
+        btnIniciarEl.classList.remove('corriendo');
+        return;
+      }
+      corriendoF = true;
+      pasoF = 0;
+      btnIniciarEl.textContent = '⏹ DETENER';
+      btnIniciarEl.classList.add('corriendo');
+      ejecutarPasoFlujo();
+    }
+
+    function finalizarFlujo(){
+      corriendoF = false;
+      limpiarActivosFlujo();
+      particulaF.style.opacity = '0';
+      btnIniciarEl.textContent = '▶ INICIAR';
+      btnIniciarEl.classList.remove('corriendo');
+      descFlujoEl.textContent = '✅ Flujo completado — Presiona INICIAR para repetir';
+    }
+
+    function abrirModalFlujo(){
+      document.getElementById('modalFlujo').classList.add('abierto');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function cerrarModalFlujo(){
+      if(corriendoF){ clearTimeout(timerF); corriendoF = false; }
+      limpiarActivosFlujo();
+      particulaF.style.opacity = '0';
+      pasoF = 0;
+      btnIniciarEl.textContent = '▶ INICIAR';
+      btnIniciarEl.classList.remove('corriendo');
+      descFlujoEl.textContent = 'Presiona INICIAR para ver el recorrido de las FUAs';
+      document.getElementById('modalFlujo').classList.remove('abierto');
+      document.body.style.overflow = '';
+    }
   </script>
 </body>
 </html>
